@@ -1,12 +1,13 @@
 import {
   TextInput,
-  Pressable,
+  TouchableOpacity,
   View,
   StyleSheet,
 } from 'react-native';
 import { useNavigate } from 'react-router-native';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+
 import Text from './Text';
 import useSignIn from '../hooks/useSignIn';
 
@@ -43,23 +44,7 @@ const validationSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 });
 
-const SignIn = () => {
-  const [signIn] = useSignIn();
-  const navigate = useNavigate();
-
-  const onSubmit = async (values) => {
-    try {
-      await signIn({
-        username: values.username,
-        password: values.password,
-      });
-
-      navigate('/');
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+export const SignInContainer = ({ onSubmit }) => {
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -110,14 +95,35 @@ const SignIn = () => {
         </Text>
       )}
 
-      <Pressable
+      <TouchableOpacity
         style={styles.button}
         onPress={formik.handleSubmit}
+        testID="signInButton"
       >
         <Text style={styles.buttonText}>Sign in</Text>
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
+};
+
+const SignIn = () => {
+  const [signIn] = useSignIn();
+  const navigate = useNavigate();
+
+  const onSubmit = async (values) => {
+    try {
+      await signIn({
+        username: values.username,
+        password: values.password,
+      });
+
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return <SignInContainer onSubmit={onSubmit} />;
 };
 
 export default SignIn;
