@@ -1,7 +1,15 @@
-import { View, StyleSheet, Pressable, ScrollView } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+} from 'react-native';
 import { Link } from 'react-router-native';
 import Constants from 'expo-constants';
-import { useApolloClient, useQuery } from '@apollo/client/react';
+import {
+  useApolloClient,
+  useQuery,
+} from '@apollo/client/react';
 import { gql } from '@apollo/client';
 
 import Text from './Text';
@@ -44,17 +52,46 @@ const AppBar = () => {
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
-        <Link to="/" component={Pressable} style={styles.tab}>
-          <Text style={styles.text}>Repositories</Text>
+        <Link
+          to="/"
+          component={Pressable}
+          style={styles.tab}
+        >
+          <Text style={styles.text}>
+            Repositories
+          </Text>
         </Link>
 
         {data?.me ? (
-          <Pressable onPress={handleSignOut} style={styles.tab}>
-            <Text style={styles.text}>Sign out</Text>
-          </Pressable>
+          <>
+            <Link
+              to="/createreview"
+              component={Pressable}
+              style={styles.tab}
+            >
+              <Text style={styles.text}>
+                Create a review
+              </Text>
+            </Link>
+
+            <Pressable
+              onPress={handleSignOut}
+              style={styles.tab}
+            >
+              <Text style={styles.text}>
+                Sign out
+              </Text>
+            </Pressable>
+          </>
         ) : (
-          <Link to="/signin" component={Pressable} style={styles.tab}>
-            <Text style={styles.text}>Sign in</Text>
+          <Link
+            to="/signin"
+            component={Pressable}
+            style={styles.tab}
+          >
+            <Text style={styles.text}>
+              Sign in
+            </Text>
           </Link>
         )}
       </ScrollView>
