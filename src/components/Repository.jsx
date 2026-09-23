@@ -1,14 +1,23 @@
-import { View, StyleSheet } from 'react-native';
-import { useParams } from 'react-router-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import RepositoryItem from './RepositoryItem';
+import ReviewItem from './ReviewItem';
+
 import useRepository from '../hooks/useRepository';
+import { useParams } from 'react-router-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  separator: {
+    height: 10,
+  },
 });
+
+const ItemSeparator = () => (
+  <View style={styles.separator} />
+);
 
 const Repository = () => {
   const { id } = useParams();
@@ -27,13 +36,25 @@ const Repository = () => {
     return <View />;
   }
 
+  const reviews = repository.reviews.edges.map(
+    (edge) => edge.node,
+  );
+
   return (
-    <View style={styles.container}>
-      <RepositoryItem
-        item={repository}
-        showGitHubButton
-      />
-    </View>
+    <FlatList
+      data={reviews}
+      renderItem={({ item }) => (
+        <ReviewItem review={item} />
+      )}
+      keyExtractor={({ id }) => id}
+      ItemSeparatorComponent={ItemSeparator}
+      ListHeaderComponent={() => (
+        <RepositoryItem
+          item={repository}
+          showGitHubButton
+        />
+      )}
+    />
   );
 };
 
