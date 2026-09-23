@@ -3,10 +3,12 @@ import {
   View,
   StyleSheet,
   Pressable,
+  TextInput,
 } from 'react-native';
 import { useNavigate } from 'react-router-native';
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
 import RepositoryItem from './RepositoryItem';
 import useRepositories from '../hooks/useRepositories';
@@ -14,6 +16,17 @@ import useRepositories from '../hooks/useRepositories';
 const styles = StyleSheet.create({
   separator: {
     height: 10,
+  },
+  header: {
+    backgroundColor: '#eee',
+  },
+  searchInput: {
+    backgroundColor: 'white',
+    padding: 10,
+    margin: 10,
+    borderWidth: 1,
+    borderColor: '#aaa',
+    borderRadius: 5,
   },
   picker: {
     backgroundColor: 'white',
@@ -32,6 +45,8 @@ export const RepositoryListContainer = ({
   orderDirection,
   setOrderBy,
   setOrderDirection,
+  searchKeyword,
+  setSearchKeyword,
 }) => {
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
@@ -49,41 +64,50 @@ export const RepositoryListContainer = ({
         </Pressable>
       )}
       ListHeaderComponent={
-        <Picker
-          selectedValue={`${orderBy}-${orderDirection}`}
-          onValueChange={(value) => {
-            if (value === 'CREATED_AT-DESC') {
-              setOrderBy('CREATED_AT');
-              setOrderDirection('DESC');
-            }
-
-            if (value === 'RATING_AVERAGE-DESC') {
-              setOrderBy('RATING_AVERAGE');
-              setOrderDirection('DESC');
-            }
-
-            if (value === 'RATING_AVERAGE-ASC') {
-              setOrderBy('RATING_AVERAGE');
-              setOrderDirection('ASC');
-            }
-          }}
-          style={styles.picker}
-        >
-          <Picker.Item
-            label="Latest repositories"
-            value="CREATED_AT-DESC"
+        <View style={styles.header}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search repositories"
+            value={searchKeyword}
+            onChangeText={setSearchKeyword}
           />
 
-          <Picker.Item
-            label="Highest rated repositories"
-            value="RATING_AVERAGE-DESC"
-          />
+          <Picker
+            selectedValue={`${orderBy}-${orderDirection}`}
+            onValueChange={(value) => {
+              if (value === 'CREATED_AT-DESC') {
+                setOrderBy('CREATED_AT');
+                setOrderDirection('DESC');
+              }
 
-          <Picker.Item
-            label="Lowest rated repositories"
-            value="RATING_AVERAGE-ASC"
-          />
-        </Picker>
+              if (value === 'RATING_AVERAGE-DESC') {
+                setOrderBy('RATING_AVERAGE');
+                setOrderDirection('DESC');
+              }
+
+              if (value === 'RATING_AVERAGE-ASC') {
+                setOrderBy('RATING_AVERAGE');
+                setOrderDirection('ASC');
+              }
+            }}
+            style={styles.picker}
+          >
+            <Picker.Item
+              label="Latest repositories"
+              value="CREATED_AT-DESC"
+            />
+
+            <Picker.Item
+              label="Highest rated repositories"
+              value="RATING_AVERAGE-DESC"
+            />
+
+            <Picker.Item
+              label="Lowest rated repositories"
+              value="RATING_AVERAGE-ASC"
+            />
+          </Picker>
+        </View>
       }
     />
   );
@@ -94,9 +118,17 @@ const RepositoryList = () => {
   const [orderDirection, setOrderDirection] =
     useState('DESC');
 
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const [debouncedSearchKeyword] = useDebounce(
+    searchKeyword,
+    500,
+  );
+
   const { repositories } = useRepositories({
     orderBy,
     orderDirection,
+    searchKeyword: debouncedSearchKeyword,
   });
 
   const navigate = useNavigate();
@@ -113,6 +145,8 @@ const RepositoryList = () => {
       orderDirection={orderDirection}
       setOrderBy={setOrderBy}
       setOrderDirection={setOrderDirection}
+      searchKeyword={searchKeyword}
+      setSearchKeyword={setSearchKeyword}
     />
   );
 };
