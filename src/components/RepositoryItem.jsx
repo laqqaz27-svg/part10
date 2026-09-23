@@ -1,4 +1,11 @@
-import { View, StyleSheet, Image } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Pressable,
+} from 'react-native';
+import * as Linking from 'expo-linking';
+
 import Text from './Text';
 import theme from '../theme';
 
@@ -40,6 +47,17 @@ const styles = StyleSheet.create({
   stat: {
     alignItems: 'center',
   },
+  githubButton: {
+    backgroundColor: theme.colors.primary,
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 15,
+    borderRadius: 5,
+  },
+  githubButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });
 
 const formatCount = (count) => {
@@ -50,9 +68,16 @@ const formatCount = (count) => {
   return `${(count / 1000).toFixed(1)}k`;
 };
 
-const RepositoryItem = ({ item }) => {
+const RepositoryItem = ({
+  item,
+  showGitHubButton = false,
+}) => {
+  const openGitHub = async () => {
+    await Linking.openURL(item.url);
+  };
+
   return (
-  <View style={styles.container} testID="repositoryItem">
+    <View style={styles.container} testID="repositoryItem">
       <View style={styles.header}>
         <Image
           style={styles.avatar}
@@ -94,15 +119,30 @@ const RepositoryItem = ({ item }) => {
         </View>
 
         <View style={styles.stat}>
-          <Text fontWeight="bold">{item.reviewCount}</Text>
+          <Text fontWeight="bold">
+            {item.reviewCount}
+          </Text>
           <Text color="textSecondary">Reviews</Text>
         </View>
 
         <View style={styles.stat}>
-          <Text fontWeight="bold">{item.ratingAverage}</Text>
+          <Text fontWeight="bold">
+            {item.ratingAverage}
+          </Text>
           <Text color="textSecondary">Rating</Text>
         </View>
       </View>
+
+      {showGitHubButton && (
+        <Pressable
+          style={styles.githubButton}
+          onPress={openGitHub}
+        >
+          <Text style={styles.githubButtonText}>
+            Open in GitHub
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 };

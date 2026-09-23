@@ -4,10 +4,9 @@ import {
   fireEvent,
   waitFor,
 } from '@testing-library/react-native';
+import { SignInContainer } from '../../components/SignIn';
 
 jest.mock('../../hooks/useSignIn', () => () => [jest.fn()]);
-
-import { SignInContainer } from '../../components/SignIn';
 
 describe('SignIn', () => {
   describe('SignInContainer', () => {

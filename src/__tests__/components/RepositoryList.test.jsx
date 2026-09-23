@@ -86,4 +86,3 @@ describe('RepositoryList', () => {
   });
 });
 
-export default RepositoryListContainer;
