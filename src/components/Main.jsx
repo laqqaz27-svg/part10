@@ -12,6 +12,7 @@ import SignIn from './SignIn';
 import theme from '../theme';
 import CreateReview from './CreateReview';
 import SignUp from './SignUp';
+import MyReviews from './MyReviews';
 
 const styles = StyleSheet.create({
   container: {
@@ -50,6 +51,11 @@ const Main = () => {
         path="/createreview"
         element={<CreateReview />}
       />
+     <Route
+      path="/myreviews"
+     element={<MyReviews />}
+     />
+            
         <Route
           path="*"
           element={<Navigate to="/" replace />}

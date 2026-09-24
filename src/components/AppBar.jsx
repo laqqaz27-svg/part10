@@ -16,10 +16,26 @@ import Text from './Text';
 import useAuthStorage from '../hooks/useAuthStorage';
 
 const ME = gql`
-  query {
+  query Me($includeReviews: Boolean = false) {
     me {
       id
       username
+
+      reviews @include(if: $includeReviews) {
+        edges {
+          node {
+            id
+            text
+            rating
+            createdAt
+
+            repository {
+              id
+              fullName
+            }
+          }
+        }
+      }
     }
   }
 `;
@@ -62,26 +78,36 @@ const AppBar = () => {
           </Text>
         </Link>
 
-        {data?.me ? (
-          <>
-            <Link
-              to="/createreview"
-              component={Pressable}
-              style={styles.tab}
-            >
-              <Text style={styles.text}>
-                Create a review
-              </Text>
-            </Link>
+      {data?.me ? (
+  <>
+    <Link
+      to="/createreview"
+      component={Pressable}
+      style={styles.tab}
+    >
+      <Text style={styles.text}>
+        Create a review
+      </Text>
+    </Link>
 
-            <Pressable
-              onPress={handleSignOut}
-              style={styles.tab}
-            >
-              <Text style={styles.text}>
-                Sign out
-              </Text>
-            </Pressable>
+    <Link
+      to="/myreviews"
+      component={Pressable}
+      style={styles.tab}
+    >
+      <Text style={styles.text}>
+        My reviews
+      </Text>
+    </Link>
+
+    <Pressable
+      onPress={handleSignOut}
+      style={styles.tab}
+    >
+      <Text style={styles.text}>
+        Sign out
+      </Text>
+    </Pressable>
           </>
         ) : (
           <>
