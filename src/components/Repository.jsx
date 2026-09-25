@@ -4,6 +4,7 @@ import RepositoryItem from './RepositoryItem';
 import ReviewItem from './ReviewItem';
 
 import useRepository from '../hooks/useRepository';
+
 import { useParams } from 'react-router-native';
 
 const styles = StyleSheet.create({
@@ -22,7 +23,12 @@ const ItemSeparator = () => (
 const Repository = () => {
   const { id } = useParams();
 
-  const { repository, loading, error } = useRepository(id);
+  const {
+    repository,
+    loading,
+    error,
+    fetchMore,
+  } = useRepository(id);
 
   if (loading) {
     return <View />;
@@ -48,6 +54,8 @@ const Repository = () => {
       )}
       keyExtractor={({ id }) => id}
       ItemSeparatorComponent={ItemSeparator}
+      onEndReached={fetchMore}
+      onEndReachedThreshold={0.5}
       ListHeaderComponent={() => (
         <RepositoryItem
           item={repository}
